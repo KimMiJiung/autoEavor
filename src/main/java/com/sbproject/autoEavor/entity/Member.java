@@ -82,8 +82,8 @@ public class Member {
 	@JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private MemberDetail memberDetail;
+    //@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //private MemberDetail memberDetail;
     
 
 }

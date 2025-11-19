@@ -1,5 +1,5 @@
 package com.sbproject.autoEavor.entity;
 
-public class CounselContent {
+public class CarDetail {
 
 }
