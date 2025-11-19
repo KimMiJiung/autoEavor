@@ -34,15 +34,19 @@ public class CarDetail {
 	@Column(columnDefinition="varchar(30) default '2025'")
 	private String trimYear;
 
+	// 전기 구동 방식
 	@Column(columnDefinition = "varchar(100)")
 	private String engine;
 	
+	// 변속기 종류
 	@Column(columnDefinition = "varchar(50)")
 	private String transmission;
 	
+	// 최대 출력
 	@Column(columnDefinition = "varchar(30)")
 	private String maxPower;
 	
+	// 최대 회전력
 	@Column(columnDefinition = "varchar(30)")
 	private String maxTorque;
 	
@@ -50,30 +54,39 @@ public class CarDetail {
 	@Column(columnDefinition = "varchar(30)")
 	private String displacement;
 	
+	// 구동 방식
 	@Column(columnDefinition = "varchar(30)")
 	private DriveType driveType;
 	
+	// 연료탱크 용량
 	@Column(precision = 5, scale = 1)
 	private BigDecimal fuelTank;
 	
+	// 배터리 유형
 	@Column(columnDefinition = "varchar(50)")
-	private String batteryType;  // 배터리 유형
+	private String batteryType;
 	
+	//배터리의 저장 용량
 	@Column(precision = 6, scale = 2)
-	private BigDecimal batteryCapacity; //배터리의 저장 용량
+	private BigDecimal batteryCapacity; 
 	
+	// km 1회 충전으로 차량이 이동 가능한 거리
 	@Min(value=1)
-	private Integer evRange;  // km 1회 충전으로 차량이 이동 가능한 거리
+	private Integer evRange;  
 	
+	// 급속 충전 시간
 	@Column(columnDefinition = "varchar(30)")
-	private String fastCharge;  // 급속 충전 시간
+	private String fastCharge;
 	
+	// 완속 충전을 통해 배터리를 충전하는 데 걸리는 시간
 	@Column(columnDefinition = "varchar(30)")
-	private String slowCharge;   // 완속 충전을 통해 배터리를 충전하는 데 걸리는 시간
+	private String slowCharge;   
 	
+	// 차량 공차중량
 	@Min(value=1)
-	private Integer curb_weight;  // 차량 공차중량
+	private Integer curb_weight;  
 	
+	// 차량 관련 추가 정보나 특이 사항정보란
 	@Column(columnDefinition = "varchar(200)")
 	private String note;  
 	
