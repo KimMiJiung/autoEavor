@@ -7,7 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,62 +27,90 @@ import lombok.Data;
 @Data
 public class Member {
 	
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique=true, columnDefinition="varchar(30)")
-    @NotBlank(message = "회원ID는 필수 입력사항입니다.")
-    private String memberId;
-
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id;
+	
+	// 회원ID는 입력형식을 지정해야함 -> Pattern
+	// - 하나 이상의 숫자를 포함, 하나 이상의 대문자 또는 소문자 포함, 공백이나 탭을 포함하지 않아야 함.
+	// - 총 8~16글자 사이여야 함
+	// - 주의: 회원ID, 비밀번호의 Pattern은 테스트가 끝나면, 주석을 풀고 정식으로 사용할 것	
+	@Column(unique=true, columnDefinition="varchar(30)")
+	@NotBlank(message = "회원ID는 필수 입력사항입니다.")
+	//@Pattern(regexp = "(?=.*[0-9])(?=.*[A-Za-z])(?=\\S+$).{8,16}", message ="회원ID 형식에 맞게 입력해주세요. ex) 숫자, 영문자를 포함하여 8~16글자 사이") // 실무용
+	private String memberId;
+	
+	// 비밀번호는 입력형식을 지정해야 함 -> Pattern
+	// - 하나 이상의 숫자를 포함, 하나 이상의 대문자 또는 소문자 포함, 하나 이상의 특수문자를 포함, 공백이나 탭을 포함하지 않아야 함.
+	// - 총 8~16글자 사이여야 함
+	// - 주의: 패턴은 테스트가 끝나면, 실무용으로 바꾸어 사용할 것
+	// 주의: 암호화를 한 크기만큼 설정해야 함 (Column 설정시)
 	@Column(columnDefinition="varchar(100)")
 	@NotBlank(message = "비밀번호는 필수 입력사항입니다.")
 	//@Pattern(regexp = "(?=.*[0-9])(?=.*[A-Za-z])(?=.*\\W)(?=\\S+$).{8,16}", message ="비밀형식에 맞게 입력해주세요. ex) 숫자, 영문자, 특수문자를 포함하여 8~16글자 사이") // 실전용
-    private String password;
-
+	private String password;
+	
 	// 테이블에서 생성 제외
 	// - Mall01Application의 메서드를 실행 할 때는 password2를 주석처리해야 함.
 	@Transient
 	//@NotBlank(message = "비밀번호 확인은 필수 입력사항입니다.")
-    private String password2;
-	@Column(columnDefinition="varchar(30)")
-	@NotBlank(message = "회원명은 필수 입력사항입니다.")		
-    private String name;
+	private String password2;
 	
+	@Column(columnDefinition="varchar(30)")
+	@NotBlank(message = "회원명은 필수 입력사항입니다.")	
+	private String name;
+	
+	// 전화번호는 입력형식을 지정해야 함 -> Pattern
+	// 앞 세자리는 010, 011, 016~019, . 또는 -
+	// 중간은 숫자 3자리 또는 숫자 네자리, . 또는 -
+	// 맨 뒤는 숫자 4자리
+	// 허용 ex) 010-1111-1111, 불가 ex) 015-1111-1111, 010-111-111, 010-11111-11111
 	@Column(columnDefinition="char(13)")
 	@NotBlank(message = "전화번호는 필수 입력사항입니다.")
-	@Pattern(regexp = "01(?:0|1|[6~9])[.-]?(\\d{3}|\\d{4})[.-](\\d{4})$", message = "전화번호 형식에 맞게 입력해주세요. ex) 010-1111-1111")	
-    private String phone;
+	@Pattern(regexp = "01(?:0|1|[6~9])[.-]?(\\d{3}|\\d{4})[.-](\\d{4})$", message = "전화번호 형식에 맞게 입력해주세요. ex) 010-1111-1111")
+	private String phone;
 	
+	// 이메일은 입력형식을 지정해야 함 -> Pattern
+	// @앞에는 2~20글자 사이, @는 필수, .앞에는 2~30글자 사이, .은 필수, .뒤에는 2~6글자 사이
+	// 허용 예) aa@aa.com
+	// 불가 예) a@a.com, @aa.com, aaa@aaa, aaa@aaa.aaaaaa
 	@Column(columnDefinition="varchar(50)")
 	@NotBlank(message = "이메일은 필수 입력사항입니다.")	
-	@Pattern(regexp = "^[A-Za-z0-9._%+-]{2,20}+@[A-Za-z0-9]{2,30}+.[A-Za-z]{2,6}$", message = "이메일의 형식에 맞게 입력해주세요. ex) aa@bb.com, aa:2글자 이상, bb:2글자 이상, com:2~6글자 사이")		
-    private String email;
+	@Pattern(regexp = "^[A-Za-z0-9._%+-]{2,20}+@[A-Za-z0-9]{2,30}+.[A-Za-z]{2,6}$", message = "이메일의 형식에 맞게 입력해주세요. ex) aa@bb.com, aa:2글자 이상, bb:2글자 이상, com:2~6글자 사이")
+	private String email;
 	
-	@Column(columnDefinition ="char(2)")	
-    private String gender;
+	@Column(columnDefinition ="char(2)")
+	private String gender;
 	
 	@NotNull(message = "나이는 1살이상 입력해야 합니다.")
-	@Min(value=1)	
-    private Integer age;
-
+	@Min(value=1)
+	private Integer age;
+	
+	// 추가 - 생년월일, 가입일, 고객 세그멘트
 	@NotBlank(message = "생년월일은 필수 입력사항입니다.")
 	@Column(columnDefinition = "char(10)")
-    private String birthday;
+	private String birthday;
 	
+	// 가입일
 	@Column(columnDefinition = "datetime default now()")
-    private LocalDateTime regDate;
+	private LocalDateTime regDate;
 	
+	// 고객 등급 - 신규, 일반, VIP, 이탈가능
+	@Column(columnDefinition = "varchar(20) default '신규'")
+	private String cSegment;
+	
+	// 사용자 역할
 	@Enumerated(EnumType.STRING)
-	private Role role;
+	private Role role;	
 	
+	/*
+	 * 회원과 주소 -> 1 대 1의 관계
+	 * - 각 회원은 1개의 주소와 매핑됨
+	 * - CascadeType.ALL -> 회원을 삭제하면 회원에 대한 주소도 함께 삭제됨
+	 */
 	@Valid // Address의 각 멤버에 대한 유효성 검사
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
-    private Address address;
-
-    //@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //private MemberDetail memberDetail;
-    
+	private Address address;
 
 }
